@@ -1,0 +1,49 @@
+<style>
+    .title {
+      padding-left: 20px; /* Adjust the value as needed */
+    }
+  </style>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="header">
+        <div class="logo">Descarte Amianto Já</div>
+        <div class="nav">
+            <a href="/perfil.html">Perfil</a>
+            <a href="/chats.html">Chats</a>
+            <a href="/noticias.html">Feed</a>
+            <a href="/mapa.html">Mapa</a>
+            <a href="/index.html">Sair</a>
+        </div>
+    </div>
+    <div class="title"><h2>    Aterro mais próximo encontrado:</h2></div>
+    <div class="index">
+    <div id="map" style="height: 450px; width: 550px;"></div>
+    </div>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    
+    <script>
+        // Inicializa o mapa com coordenadas do Space Needle em Seattle, WA
+        const map = L.map('map').setView([-23.411025650727314, -46.558962404100996], 13); // Coordenadas do Space Needle
+    
+        // Adiciona a camada de tiles do OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+    
+        // Adiciona um marcador no Space Needle
+        L.marker([-23.411025650727314, -46.558962404100996]).addTo(map)
+            .bindPopup("Aterro Sanitário Municipal de Guarulhos, Vila Bela") //Estrada Professor Edmundo Rosset, nº 7450 - Vila Bela
+            .openPopup();
+    </script>
+</body>
+</html>
