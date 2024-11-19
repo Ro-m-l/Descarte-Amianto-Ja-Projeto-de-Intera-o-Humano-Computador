@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Perfil</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="scripts.js" defer></script>
 </head>
-<body>
+<body class="perfil">
     <div class="header">
         <div class="logo">Descarte Amianto Já</div>
         <div class="nav">
@@ -18,20 +19,22 @@
         </div>
     </div>
     <div class="header headerPerfil">
-        <h1>Arnaldo Junior</h1>
-        <p>arnaldinho@ubifots.com</p>
+        <h1 id="profile-name">Arnaldo Junior</h1>
+        <p id="profile-email">arnaldinho@ubifots.com</p>
     </div>
     <div class="imagemPerfil">
-        <img src="veioarnaldo.png">
+        <img src="perfilpadrao.png">
     </div>
     <div class="index">
-        <form id = "login">
+        <form id="profile-form" onsubmit="return handleProfileUpdate(event)">
             <label for="nome">Nome</label><br>
-            <input type="text" id="nome" name="nome" placeholder="Arnaldo Junior"><br><br> <!-- pegar valor salvo pro nome no placeholder e trocar dps com novo nome -->
+            <input type="text" id="nome" name="nome" placeholder="Nome"><br><br>
             <label for="idade">Idade</label><br>
-            <input type="text" id="idade" name="idade" placeholder="39"><br><br>
+            <input type="number" id="idade" name="idade" placeholder="Idade"><br><br>
             <label for="cidade">Cidade</label><br>
-            <input type="text" id="cidade" name="cidade" placeholder="São Mateus">
+            <input type="text" id="cidade" name="cidade" placeholder="Cidade"><br><br>
+            <input type="submit" name="go" value="Salvar"/>
+            <p id="message"></p>
         </form>
     </div>
 </body>

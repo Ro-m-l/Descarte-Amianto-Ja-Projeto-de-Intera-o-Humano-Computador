@@ -188,3 +188,12 @@ html, body {
     margin: 0;
     padding-left: 0;
 }
+
+/* Mapa */
+.busca {
+    display: flex;
+}
+
+#map {
+    margin-left: 30px;
+}

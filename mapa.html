@@ -1,18 +1,28 @@
-<style>
-    .title {
-      padding-left: 20px; /* Adjust the value as needed */
-    }
-  </style>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Descarte Amianto Já</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .title {
+            padding-left: 20px;
+            /* Adjust the value as needed */
+        }
+
+        .busca form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .busca label {
+            text-align: center;
+        }
+    </style>
 </head>
+
 <body>
     <div class="header">
         <div class="logo">Descarte Amianto Já</div>
@@ -24,26 +34,70 @@
             <a href="/index.html">Sair</a>
         </div>
     </div>
-    <div class="title"><h2>    Aterro mais próximo encontrado:</h2></div>
-    <div class="index">
-    <div id="map" style="height: 450px; width: 550px;"></div>
+    <div class="title"><h2>Aterro mais próximo encontrado:</h2></div>
+    <div class="index busca">
+        <form id="login" onsubmit="event.preventDefault(); calculateDistance()">
+            <label for="endereco">Insira o endereço para buscar abaixo</label><br>
+            <input type="text" id="endereco" name="endereco" placeholder="Ex: Av. Alfredo Egídio de Souza Aranha, 100 - Vila Cruzeiro, São Paulo"><br><br>
+            <input type="submit" name="go" value="Buscar"/>
+            <p id="message"></p>
+        </form>
+        <div id="map" style="height: 450px; width: 550px;"></div>
     </div>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    
+
     <script>
-        // Inicializa o mapa com coordenadas do Space Needle em Seattle, WA
-        const map = L.map('map').setView([-23.411025650727314, -46.558962404100996], 13); // Coordenadas do Space Needle
-    
-        // Adiciona a camada de tiles do OpenStreetMap
+        const map = L.map('map').setView([-23.411025650727314, -46.558962404100996], 13); // Coordenadas do Space Needle em Seattle, WA
+
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
-    
-        // Adiciona um marcador no Space Needle
-        L.marker([-23.411025650727314, -46.558962404100996]).addTo(map)
-            .bindPopup("Aterro Sanitário Municipal de Guarulhos, Vila Bela") //Estrada Professor Edmundo Rosset, nº 7450 - Vila Bela
-            .openPopup();
+
+        const markers = [
+            L.marker([-22.666228607994004, -44.85251154278651]).bindPopup("ATERRO MUNICIPAL DE CASCATA"),
+            L.marker([-22.998551856899752, -47.10203702746027]).bindPopup("ATERRO SANITÁRIO BANDEIRANTES"),
+            L.marker([-23.69298825569998, -46.68639539022055]).bindPopup("TRANSBORDO SANTO AMARO"),
+            L.marker([-23.62354901460219, -46.43237112780147]).bindPopup("ATERRO SANITÁRIO CTL")
+        ];
+
+        markers.forEach(marker => marker.addTo(map));
+
+        function calculateDistance() {
+            const address = document.getElementById('endereco').value;
+            fetch(`https://api.opencagedata.com/geocode/v1/json?q=${address}&key=27ad0846f65344ddb06e18b61f0d2bd9`)
+            .then(response => response.json())
+            .then(data => {
+                const lat = data.results[0].geometry.lat;
+                const lng = data.results[0].geometry.lng;
+                const marker = L.marker([lat, lng]).addTo(map);
+                marker.bindPopup("Endereço encontrado");
+                marker.openPopup();
+                const distances = [];
+                markers.forEach(marker => {
+                    const distance = haversineDistance(lat, lng, marker.getLatLng().lat, marker.getLatLng().lng);
+                    distances.push({ marker: marker, distance: distance });
+                });
+                distances.sort((a, b) => a.distance - b.distance);
+                distances.forEach(item => {
+                    item.marker.bindPopup(`Distância: ${item.distance.toFixed(2)} km`);
+                    item.marker.openPopup();
+                });
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function haversineDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Radius of the Earth in km
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            const d = R * c; // Distance in km
+            return d;
+        }
     </script>
 </body>
 </html>
